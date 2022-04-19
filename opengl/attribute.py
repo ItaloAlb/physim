@@ -8,6 +8,8 @@ class Attribute(object):
         self.attribType, self.attribData = attribType, attribData
         self.VBO = glGenBuffers(1)
 
+        self.uploadData()
+
     @property
     def attribType(self):
         return self._attribType
@@ -22,7 +24,7 @@ class Attribute(object):
         self.attribData = attribData
 
     # method: (i) static, (ii) dynamic
-    def uploadData(self, method):
+    def uploadData(self, method=GL_STATIC_DRAW):
         glBindBuffer(GL_ARRAY_BUFFER, self.VBO)
         data = np.array(self.attribData).astype(np.float32)
         glBufferData(GL_ARRAY_BUFFER, data.nbytes, data, method)
