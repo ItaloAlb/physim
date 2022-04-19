@@ -19,7 +19,7 @@ class Geometry(object):
 
 
 class RectangleGeometry(Geometry):
-    def __init__(self, width, height):
+    def __init__(self, width=1, height=1):
         super().__init__()
         p0, p1, p2, p3 = [-width/2, -height/2, 0], \
                          [width/2, -height/2, 0], \
