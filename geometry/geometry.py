@@ -5,7 +5,7 @@ from opengl.attribute import Attribute
 #   Which describe vertex properties such as position and color
 class Geometry(object):
     def __init__(self):
-        self.attrib = []
+        self.attrib = {}
 
         self.vertexCount = None
 
@@ -14,7 +14,8 @@ class Geometry(object):
 
     # Not implemented yet
     def countVertex(self):
-        pass
+        attrib = list(self.attrib.values())[0]
+        self.vertexCount = len(attrib.attribData)
 
 
 class RectangleGeometry(Geometry):
