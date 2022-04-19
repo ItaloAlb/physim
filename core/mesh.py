@@ -10,3 +10,11 @@ class Mesh(Object3D):
         self.material = material
 
         self.visible = True
+
+        self.VAO = glGenVertexArrays(1)
+        glBindVertexArray(self.VAO)
+
+        for attribName, attribObject in self.geometry.attrib.items():
+            attribObject.setLink(material.programRef, attribName)
+
+        glBindVertexArray(0)

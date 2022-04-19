@@ -1,12 +1,20 @@
 from opengl.attribute import Attribute
 
-
+#   Geometry class will specify the general shape and other vertex-related properties
+#   Also this class will mainly serve to store Attribute (from opengl.attribute) objects
+#   Which describe vertex properties such as position and color
 class Geometry(object):
     def __init__(self):
         self.attrib = []
 
+        self.vertexCount = None
+
     def addAttrib(self, attribType, attribName, attribData):
         self.attrib[attribName] = Attribute(attribType, attribData)
+
+    # Not implemented yet
+    def countVertex(self):
+        pass
 
 
 class RectangleGeometry(Geometry):

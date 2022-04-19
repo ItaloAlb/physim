@@ -1,7 +1,8 @@
 from OpenGL.GL import *
 import numpy as np
 
-
+#   Attribute class will manage opengl attributes such as position and color
+#   It will handle two main tasks: (i) upload data to a buffer; (ii) set a link between program and attribute
 class Attribute(object):
     def __init__(self, attribType, attribData):
         self.attribType, self.attribData = attribType, attribData
@@ -20,6 +21,7 @@ class Attribute(object):
     def setData(self, attribData):
         self.attribData = attribData
 
+    # method: (i) static, (ii) dynamic
     def uploadData(self, method):
         glBindBuffer(GL_ARRAY_BUFFER, self.VBO)
         data = np.array(self.attribData).astype(np.float32)
@@ -45,7 +47,7 @@ class Attribute(object):
         elif self.attribType == "vec4":
             glVertexAttribPointer(attribRef, 4, GL_FLOAT, False, stride, offset)
         else:
-            raise Exception("Attribute " + attribName + " has wrong type: " + attribType)
+            raise Exception("Attribute " + attribName + " has wrong type: " + self.attribType)
 
         glEnableVertexAttribArray(attribRef)
 

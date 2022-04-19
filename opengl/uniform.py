@@ -4,6 +4,7 @@ import numpy as np
 
 class Uniform(object):
     def __init__(self, uniformType, uniformData):
+        self.uniformRef = None
         self.uniformType, self.uniformData = uniformType, uniformData
 
     @property
@@ -16,30 +17,30 @@ class Uniform(object):
             raise Exception("Message not implemented yet.")
         self._uniformType = uniformType
 
-    # def getUniformRef(self, programRef, uniformName):
-    #     self.uniformRef = glGetUniformLocation(programRef, uniformName)
+    def setUniformRef(self, programRef, uniformName):
+        self.uniformRef = glGetUniformLocation(programRef, uniformName)
 
     def uploadData(self, programRef, uniformName, uniformType):
-        uniformRef = glGetUniformLocation(programRef, uniformName)
+        # uniformRef = glGetUniformLocation(programRef, uniformName)
 
-        if uniformRef == 1:
+        if self.uniformRef == 1:
             return -1
 
         if uniformType == "int" or uniformType == "bool":
-            glUniform1i(uniformRef, self.uniformData)
-        elif uniformRef == "float":
-            glUniform1f(uniformRef, self.uniformData)
-        elif uniformRef == "vec2":
-            glUniform1f(uniformRef,
+            glUniform1i(self.uniformRef, self.uniformData)
+        elif self.uniformRef == "float":
+            glUniform1f(self.uniformRef, self.uniformData)
+        elif self.uniformRef == "vec2":
+            glUniform1f(self.uniformRef,
                         self.uniformData[0],
                         self.uniformData[1])
-        elif uniformRef == "vec3":
-            glUniform3f(uniformRef,
+        elif self.uniformRef == "vec3":
+            glUniform3f(self.uniformRef,
                         self.uniformData[0],
                         self.uniformData[1],
                         self.uniformData[2])
-        elif uniformRef == "vec4":
-            glUniform4f(uniformRef,
+        elif self.uniformRef == "vec4":
+            glUniform4f(self.uniformRef,
                         self.uniformData[0],
                         self.uniformData[1],
                         self.uniformData[2],
