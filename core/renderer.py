@@ -29,11 +29,11 @@ class Renderer(object):
             # bind VAO
             glBindVertexArray(mesh.VAO)
 
-            mesh.material.uniforms["modelMatrix"].setUniformData = mesh.getWorldMatrix()
+            mesh.material.uniforms["modelMatrix"].uniformData = mesh.getWorldMatrix()
 
-            mesh.material.uniforms["viewMatrix"].setUniformData = camera.viewMatrix()
+            mesh.material.uniforms["viewMatrix"].uniformData = camera.viewMatrix
 
-            mesh.material.uniforms["projectionMatrix"].setUniformData = camera.projectionMatrix()
+            mesh.material.uniforms["projectionMatrix"].uniformData = camera.projectionMatrix
 
             for uniformName, uniformObject in mesh.material.uniforms.items():
                 uniformObject.uploadData()
