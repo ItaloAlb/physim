@@ -1,4 +1,3 @@
-from core.object3d import Object3D
 from core.mesh import Mesh
 from OpenGL.GL import *
 
