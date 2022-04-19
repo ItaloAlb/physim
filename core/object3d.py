@@ -14,7 +14,7 @@ class Object3D(object):
 
     @transform.setter
     def transform(self, matrix):
-        if not isinstance(matrix, np.ndarray) and matrix.shape == (4, 4):
+        if not(isinstance(matrix, np.ndarray)) and matrix.shape == (4, 4):
             raise Exception("Message not implemented yet.")
         self._transform = matrix
 
