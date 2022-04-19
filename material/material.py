@@ -78,9 +78,11 @@ class BasicMaterial(Material):
         self.setUniformsRef()
 
 class PointMaterial(BasicMaterial):
-    def __init__(self, properties={}):
+    def __init__(self, properties=None):
         super().__init__()
 
+        if properties is None:
+            properties = {}
         self.settings["drawStyle"] = GL_POINTS
         self.settings["pointSize"] = 8
         self.settings["roundedPoint"] = False
@@ -97,8 +99,10 @@ class PointMaterial(BasicMaterial):
 
 
 class LineMaterial(BasicMaterial):
-    def __init__(self, properties={}):
+    def __init__(self, properties=None):
         super().__init__()
+        if properties is None:
+            properties = {}
         self.settings["drawStyle"] = GL_LINE_STRIP
         self.settings["lineWidth"] = 1
         # line type: "strip" | "loop" | "segments"
@@ -120,9 +124,11 @@ class LineMaterial(BasicMaterial):
 
 
 class SurfaceMaterial(BasicMaterial):
-    def __init__(self, properties={}):
+    def __init__(self, properties=None):
         super().__init__()
 
+        if properties is None:
+            properties = {}
         self.settings["drawStyle"] = GL_TRIANGLES
         self.settings["doubleSide"] = False
         self.settings["wireframe"] = False
