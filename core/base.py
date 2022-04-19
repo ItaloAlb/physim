@@ -23,18 +23,26 @@ void main(){
 }"""
 VAO = glGenVertexArrays(1)
 programRef = OpenGLUtils.initializeProgram(vsCode, fsCode)
-positionData = [0.0, 0.5, 0.0,
-                -0.5, -0.5, 0.0,
-                0.5, -0.5, 0.0]
+positionData = \
+    [[-0.5, -0.5,  0. ],
+    [ 0.5, -0.5,  0. ],
+    [-0.5,  0.5,  0. ],
+    [ 0.5, -0.5,  0. ],
+    [-0.5,  0.5,  0. ],
+    [ 0.5,  0.5,  0. ]]
 positionAttribute = Attribute("vec3", positionData)
 positionAttribute.uploadData(GL_DYNAMIC_DRAW)
 positionAttribute.setLink(programRef, "position")
-colorData = [1.0, 0.0, 0.0,
-             0.0, 1.0, 0.0,
-             0.0, 0.0, 1.0]
+colorData = \
+    [[1., 0., 0.],
+    [0., 1., 0.],
+    [0., 0., 1.],
+    [0., 1., 0.],
+    [0., 0., 1.],
+    [1., 1., 1.]]
 colorAttribute = Attribute("vec3", colorData)
 colorAttribute.uploadData(GL_STATIC_DRAW)
 successLink = colorAttribute.setLink(programRef, "vertexColor")
 glUseProgram(programRef)
-glDrawArrays(GL_TRIANGLES, 0, 3)
+glDrawArrays(GL_TRIANGLES, 0, 6)
 pyglet.app.run()
