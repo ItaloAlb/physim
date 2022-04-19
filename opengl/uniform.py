@@ -20,13 +20,13 @@ class Uniform(object):
     def setUniformRef(self, programRef, uniformName):
         self.uniformRef = glGetUniformLocation(programRef, uniformName)
 
-    def uploadData(self, programRef, uniformName, uniformType):
+    def uploadData(self):
         # uniformRef = glGetUniformLocation(programRef, uniformName)
 
         if self.uniformRef == 1:
             return -1
 
-        if uniformType == "int" or uniformType == "bool":
+        if self.uniformType == "int" or self.uniformType == "bool":
             glUniform1i(self.uniformRef, self.uniformData)
         elif self.uniformRef == "float":
             glUniform1f(self.uniformRef, self.uniformData)
