@@ -43,49 +43,41 @@ class BasicMaterial(Material):
         uniform mat4 projectionMatrix;
         uniform mat4 viewMatrix;
         uniform mat4 modelMatrix;
-        in vec4 vertexPosition;
-        in vec4 vertexColor;
-        out vec4 color;
+        in vec3 vertexPosition;
+        in vec3 vertexColor;
+        out vec3 color;
         
         void main()
         {
-            gl_Position = projectionMatrix * viewMatrix * modelMatrix * vertexPosition;
+            gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(vertexPosition, 1.0);
             color = vertexColor;
         }
         """
 
         fragmentShaderCode = """
-        uniform vec4 baseColor;
+        uniform vec3 baseColor;
         uniform bool useVertexColor;
-        in vec4 color;
+        in vec3 color;
         out vec4 fragColor;
         
         void main()
         {
-            vec4 tempColor = baseColor;
-            
-            if(useVertexColor)
-                tempColor *= color;
-            
-            fragColor = tempColor;
+            fragColor = vec4(color, 1.0);
         }
         """
         
         super().__init__(vertexShaderCode, fragmentShaderCode)
 
-        self.addUniform("vec4", "baseColor", [1.0, 1.0, 1.0, 1.0])
-        self.addUniform("bool", "useVertexColor", False)
+        self.addUniform("vec3", "baseColor", [1.0, 1.0, 1.0])
+        self.addUniform("bool", "useVertexColor", True)
         self.setUniformsRef()
 
 class PointMaterial(BasicMaterial):
-    def __init__(self, properties=None):
+    def __init__(self, properties={}):
         super().__init__()
-
-        if properties is None:
-            properties = {}
         self.settings["drawStyle"] = GL_POINTS
-        self.settings["pointSize"] = 8
-        self.settings["roundedPoint"] = False
+        self.settings["pointSize"] = 10
+        self.settings["roundedPoint"] = True
 
         self.setProperties(properties)
 
@@ -99,10 +91,8 @@ class PointMaterial(BasicMaterial):
 
 
 class LineMaterial(BasicMaterial):
-    def __init__(self, properties=None):
+    def __init__(self, properties={}):
         super().__init__()
-        if properties is None:
-            properties = {}
         self.settings["drawStyle"] = GL_LINE_STRIP
         self.settings["lineWidth"] = 1
         # line type: "strip" | "loop" | "segments"
@@ -124,11 +114,8 @@ class LineMaterial(BasicMaterial):
 
 
 class SurfaceMaterial(BasicMaterial):
-    def __init__(self, properties=None):
+    def __init__(self, properties={}):
         super().__init__()
-
-        if properties is None:
-            properties = {}
         self.settings["drawStyle"] = GL_TRIANGLES
         self.settings["doubleSide"] = False
         self.settings["wireframe"] = False
