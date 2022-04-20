@@ -8,15 +8,15 @@ class Object3D(object):
         self.parent = None
         self.children = []
 
-    @property
-    def transform(self):
-        return self._transform
-
-    @transform.setter
-    def transform(self, matrix):
-        if not(isinstance(matrix, np.ndarray)) and matrix.shape == (4, 4):
-            raise Exception("Message not implemented yet.")
-        self._transform = matrix
+    # @property
+    # def transform(self):
+    #     return self._transform
+    #
+    # @transform.setter
+    # def transform(self, matrix):
+    #     if not(isinstance(matrix, np.ndarray)) and matrix.shape == (4, 4):
+    #         raise Exception("Message not implemented yet.")
+    #     self._transform = matrix
 
     def add(self, child):
         self.children.append(child)
@@ -30,7 +30,7 @@ class Object3D(object):
         if self.parent is None:
             return self.transform
         else:
-            return self.parent.getWorldMatrix() * self.transform
+            return self.parent.getWorldMatrix() @ self.transform
 
     def getDescendant(self):
         descendant = []
@@ -46,9 +46,9 @@ class Object3D(object):
 
     def applyMatrix(self, matrix, localCoord=True):
         if localCoord:
-            self.transform = self.transform * matrix
+            self.transform = self.transform @ matrix
         else:
-            self.transform = matrix * self.transform
+            self.transform = matrix @ self.transform
 
     def translate(self, x, y, z, localCoord=True):
         matrix = Matrix.translate(x, y, z)
@@ -59,7 +59,7 @@ class Object3D(object):
         self.applyMatrix(matrix, localCoord)
 
     def rotate(self, x, y, z, localCoord=True):
-        matrix = Matrix.rotate(x, y, z)
+        matrix = Matrix.rotateX(x) @ Matrix.rotateY(y) @ Matrix.rotateZ(z)
         self.applyMatrix(matrix, localCoord)
 
     def getLocalPosition(self):
