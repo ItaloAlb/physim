@@ -12,14 +12,5 @@ class Camera(Object3D):
                                                    far=far)
         self.viewMatrix = Matrix.identity()
 
-    # @property
-    # def viewMatrix(self):
-    #     return self._viewMatrix
-    #
-    # @viewMatrix.setter
-    # def viewMatrix(self, matrix):
-    #     self._viewMatrix = matrix
-
-
     def updateViewMatrix(self):
         self.viewMatrix = inv(self.getWorldMatrix())
