@@ -68,8 +68,8 @@ class BasicMaterial(Material):
         
         super().__init__(vertexShaderCode, fragmentShaderCode)
 
-        self.addUniform("vec3", "baseColor", [1.0, 1.0, 1.0])
-        self.addUniform("bool", "useVertexColor", True)
+        # self.addUniform("vec3", "baseColor", [1.0, 1.0, 1.0])
+        # self.addUniform("bool", "useVertexColor", True)
         self.setUniformsRef()
 
 class PointMaterial(BasicMaterial):
