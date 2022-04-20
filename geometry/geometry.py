@@ -1,4 +1,5 @@
 from opengl.attribute import Attribute
+from math import pi, cos, sin
 
 #   Geometry class will specify the general shape and other vertex-related properties
 #   Also this class will mainly serve to store Attribute (from opengl.attribute) objects
@@ -25,7 +26,10 @@ class RectangleGeometry(Geometry):
                          [width/2, height/2, 0.0], \
                          [-width/2, -height/2, 0.0], \
                          [width/2, -height/2, 0.0]
+
+        # vertex: top left, top right, bottom left, bottom right
         c0, c1, c2, c3 = [1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0], [1.0, 1.0, 1.0]
+
         positionData = [p0, p1, p2, p1, p2, p3]
         colorData = [c0, c1, c2, c1, c2, c3]
 
@@ -33,6 +37,32 @@ class RectangleGeometry(Geometry):
         self.addAttrib("vec3", "vertexColor", colorData)
 
         self.vertexCount = 6
+
+
+class PolygonGeometry(Geometry):
+    def __init__(self, radius, sides: int = 3):
+        super().__init__()
+
+        a = 2 * pi / sides
+
+        positionData = []
+        colorData = []
+
+        for n in range(sides):
+            positionData.append([0, 0, 0])
+            positionData.append([radius * cos(n * a), radius * sin(n * a), 0])
+            positionData.append([radius * cos((n + 1) * a), radius * sin((n + 1) * a), 0])
+
+            # vertex: center, left, right
+            colorData.append([1, 1, 1])
+            colorData.append([1, 0, 0])
+            colorData.append([0, 0, 1])
+
+        self.addAttrib("vec3", "vertexPosition", positionData)
+        self.addAttrib("vec3", "vertexColor", colorData)
+
+        self.countVertex()
+
 
 
 class BoxGeometry(Geometry):
@@ -61,4 +91,5 @@ class BoxGeometry(Geometry):
         self.addAttrib("vec3", "vertexPosition", positionData)
         self.addAttrib("vec3", "vertexColor", colorData)
 
-        self.vertexCount = 36
+        self.countVertex()
+
