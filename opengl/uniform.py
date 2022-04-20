@@ -22,7 +22,7 @@ class Uniform(object):
 
     def uploadData(self):
 
-        if self.uniformRef == 1:
+        if self.uniformRef == -1:
             return -1
 
         if self.uniformType == "int" or self.uniformType == "bool":
@@ -47,11 +47,3 @@ class Uniform(object):
         elif self.uniformType == "mat4":
             glUniformMatrix4fv(self.uniformRef, 1, False, self.uniformData)
         return 0
-
-    def getUniformData(self):
-        return self.uniformData
-
-    def setUniformData(self, uniformData):
-        if not isinstance(uniformData, (int, bool, float, np.ndarray)):
-            raise Exception("Message not implemented yet.")
-        self.uniformData = uniformData
