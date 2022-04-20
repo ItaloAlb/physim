@@ -44,21 +44,21 @@ class Object3D(object):
 
         return descendant
 
-    def applyMatrix(self, matrix, localCoord=True):
+    def applyMatrix(self, matrix, localCoord):
         if localCoord:
             self.transform = self.transform @ matrix
         else:
             self.transform = matrix @ self.transform
 
-    def translate(self, x, y, z, localCoord=True):
+    def translate(self, x, y, z, localCoord=False):
         matrix = Matrix.translate(x, y, z)
         self.applyMatrix(matrix, localCoord)
 
-    def scale(self, x, y, z, localCoord=True):
+    def scale(self, x, y, z, localCoord=False):
         matrix = Matrix.scale(x, y, z)
         self.applyMatrix(matrix, localCoord)
 
-    def rotate(self, x, y, z, localCoord=True):
+    def rotate(self, x, y, z, localCoord=False):
         matrix = Matrix.rotateX(x) @ Matrix.rotateY(y) @ Matrix.rotateZ(z)
         self.applyMatrix(matrix, localCoord)
 

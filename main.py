@@ -25,14 +25,10 @@ def main():
 
     mesh.translate(0.0, 0.0, -5.0)
 
-    mesh.rotate(0.0, 0.0, 0.0)
-
     scene.add(mesh)
 
     def update(dt:float):
-        mesh.rotate(1, 1, 1, False)
-        # mesh.rotateZ(1, False)
-        # mesh.scale(1.001, 1.001, 1.0)
+        mesh.rotate(0, 0, 0)
 
 
     clock = pyglet.clock.schedule_interval(update, 1/120)
