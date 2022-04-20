@@ -47,17 +47,18 @@ class BoxGeometry(Geometry):
                                          [-width / 2, -height / 2, depth / 2], \
                                          [width / 2, -height / 2, depth / 2]
 
-        # positionData = [p0, p1, p2, p1, p2, p3, p4, p5, p6, p5, p6, p7, p0, p2, p4, p2, p4, p6, p1, p3, p5, p3, p5, p7, p0, p1, p4, p1, p4, p5, p2, p3, p6, p3, p6, p7]
+        positionData = [p0, p1, p2, p1, p2, p3, p4, p5, p6, p5, p6, p7, p0, p2, p4, p2, p4, p6, p1, p3, p5, p3, p5, p7, p0, p1, p4, p1, p4, p5, p2, p3, p6, p3, p6, p7]
 
-        positionData = [p0, p1, p2]
+        # face: z+, z-
+        c0, c1 = [1, 0.5, 0.5], [0.5, 0, 0]
+        # face: x+, x-
+        c2, c3 = [0.5, 1, 0.5], [0, 0.5, 0]
+        # face: y+, y-
+        c4, c5 = [0.5, 0.5, 1], [0, 0, 0.5]
 
-        c0, c1, c2, c3, c4, c5, c6, c7 = [1.0, 1.0, 1.0], [1.0, 1.0, 1.0], [1.0, 1.0, 1.0], [1.0, 1.0, 1.0], [1.0, 1.0, 1.0], [1.0, 1.0, 1.0], [1.0, 1.0, 1.0], [1.0, 1.0, 1.0]
+        colorData = [c1] * 6 + [c0] * 6 + [c3] * 6 + [c2] * 6 + [c5] * 6 + [c4] * 6
 
-        # colorData = [c0, c1, c2, c1, c2, c3, c4, c5, c6, c5, c6, c7, c0, c2, c4, c2, c4, c6, c1, c3, c5, c3, c5, c7, c0, c1, c4, c1, c4, c5, c2, c3, c6, c3, c6, c7]
+        self.addAttrib("vec3", "vertexPosition", positionData)
+        self.addAttrib("vec3", "vertexColor", colorData)
 
-        colorData = [c0, c1, c2]
-
-        self.addAttrib("vec4", "vertexPosition", positionData)
-        self.addAttrib("vec4", "vertexColor", colorData)
-
-        self.vertexCount = 3
+        self.vertexCount = 36
