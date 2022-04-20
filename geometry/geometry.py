@@ -64,6 +64,61 @@ class PolygonGeometry(Geometry):
         self.countVertex()
 
 
+class ParametricGeometry(Geometry):
+    def __init__(self, u0, un, uRes, v0, vn, vRes, S):
+        super().__init__()
+
+        du = (un - u0) / uRes
+        dv = (vn - v0) / vRes
+
+        position = []
+
+        for uIndex in range(uRes + 1):
+            vArray = []
+            for vIndex in range(vRes + 1):
+                u = u0 + uIndex * du
+                v = v0 + vIndex * dv
+                vArray.append(S(u, v))
+            position.append(vArray)
+
+        positionData = []
+        colorData = []
+
+        c0, c1, c2 = [1, 0, 0], [0, 1, 0], [0, 0, 1]
+        c3, c4, c5 = [0, 1, 1], [1, 0, 1], [1, 1, 0]
+
+        for xIndex in range(uRes):
+            for yIndex in range(vRes):
+                pA = position[xIndex][yIndex]
+                pB = position[xIndex + 1][yIndex]
+                pC = position[xIndex + 1][yIndex + 1]
+                pD = position[xIndex][yIndex + 1]
+
+                positionData += [pA.copy(), pB.copy(), pC.copy(), pA.copy(), pC.copy(), pD.copy()]
+                colorData += [c0, c1, c2, c3, c4, c5]
+
+        self.addAttrib("vec3", "vertexPosition", positionData)
+        self.addAttrib("vec3", "vertexColor", colorData)
+
+        self.countVertex()
+
+class PlaneGeometry(ParametricGeometry):
+    def __init__(self, width=1, height=1, widthSegments=8, heightSegments=8):
+        def S(u, v):
+            return [u, v, 0]
+        super().__init__(-width/2, width/2, widthSegments, -height/2, height/2, heightSegments, S)
+
+class EllipsoidGeometry(ParametricGeometry):
+    def __init__(self, width=1, height=1, depth=1, radiusSegments=32, heightSegments=16):
+        def S(u, v):
+            return [width / 2 * sin(u) * cos(v), height / 2 * sin(v), depth / 2 * cos(u) * cos(v)]
+        super().__init__(0, 2 * pi, radiusSegments, -pi/2, pi/2, heightSegments, S)
+
+class SphereGeometry(EllipsoidGeometry):
+    def __init__(self, radius=1, radiusSegments=32, heightSegments=16):
+        super().__init__(2 * radius, 2 * radius, 2 * radius, radiusSegments, heightSegments)
+
+
 
 class BoxGeometry(Geometry):
     def __init__(self, width=1, height=1, depth=1):

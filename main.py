@@ -18,7 +18,7 @@ def main():
     scene = Scene()
     camera = Camera()
 
-    geometry = PolygonGeometry(1, 6)
+    geometry = EllipsoidGeometry()
     material = SurfaceMaterial()
 
     mesh = Mesh(geometry, material)
