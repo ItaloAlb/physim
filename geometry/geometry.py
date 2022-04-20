@@ -102,22 +102,37 @@ class ParametricGeometry(Geometry):
 
         self.countVertex()
 
+
 class PlaneGeometry(ParametricGeometry):
     def __init__(self, width=1, height=1, widthSegments=8, heightSegments=8):
         def S(u, v):
             return [u, v, 0]
         super().__init__(-width/2, width/2, widthSegments, -height/2, height/2, heightSegments, S)
 
+
 class EllipsoidGeometry(ParametricGeometry):
     def __init__(self, width=1, height=1, depth=1, radiusSegments=32, heightSegments=16):
         def S(u, v):
             return [width / 2 * sin(u) * cos(v), height / 2 * sin(v), depth / 2 * cos(u) * cos(v)]
-        super().__init__(0, 2 * pi, radiusSegments, -pi/2, pi/2, heightSegments, S)
+        super().__init__(0, 2 * pi, radiusSegments, - pi / 2, pi / 2, heightSegments, S)
+
 
 class SphereGeometry(EllipsoidGeometry):
     def __init__(self, radius=1, radiusSegments=32, heightSegments=16):
         super().__init__(2 * radius, 2 * radius, 2 * radius, radiusSegments, heightSegments)
 
+
+class TorusGeometry(ParametricGeometry):
+    def __init__(self, R=1, r=1/4, radiusSegments=32, heightSegments=16):
+        def S(u, v):
+            return [(R + r * cos(v)) * cos(u), (R + r * cos(v)) * sin(u), r * sin(v)]
+        super().__init__(0, 2 * pi, radiusSegments, 0, 2 * pi, heightSegments, S)
+
+class TrefoilKnotGeometry(ParametricGeometry):
+    def __init__(self, radiusSegments=32, heightSegments=32):
+        def S(u, v):
+            return [(sin(u) + 2 * sin(2 * u)), (cos(u) - 2 * cos(2 * u)), - sin(3 * u)]
+        super().__init__(0, 2 * pi, radiusSegments, 0, 2 * pi, heightSegments, S)
 
 
 class BoxGeometry(Geometry):

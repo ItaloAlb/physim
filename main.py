@@ -18,8 +18,8 @@ def main():
     scene = Scene()
     camera = Camera()
 
-    geometry = EllipsoidGeometry()
-    material = SurfaceMaterial()
+    geometry = TrefoilKnotGeometry()
+    material = LineMaterial()
 
     mesh = Mesh(geometry, material)
 
@@ -28,7 +28,7 @@ def main():
     scene.add(mesh)
 
     def update(dt:float):
-        mesh.rotate(0, 0, 0.1)
+        mesh.rotate(0, 0.1, 0.1)
 
 
     clock = pyglet.clock.schedule_interval(update, 1/120)
