@@ -18,7 +18,7 @@ def main():
     scene = Scene()
     camera = Camera()
 
-    geometry = RectangleGeometry()
+    geometry = BoxGeometry()
     material = SurfaceMaterial()
 
     mesh = Mesh(geometry, material)
@@ -28,7 +28,7 @@ def main():
     scene.add(mesh)
 
     def update(dt:float):
-        mesh.rotate(0, 0, 0)
+        mesh.rotate(0.0, 0.1, 0.0)
 
 
     clock = pyglet.clock.schedule_interval(update, 1/120)
