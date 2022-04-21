@@ -17,17 +17,6 @@ class Matrix(object):
                         [0, 0, 1, 0],
                         [x, y, z, 1]]).astype(float)
 
-    # Obsolete function
-    # @staticmethod
-    # def rotate(x=0, y=0, z=0):
-    #
-    #     cx, cy, cz = cos(x * np.pi / 180), cos(y * np.pi / 180), cos(z * np.pi / 180)
-    #     sx, sy, sz = sin(x * np.pi / 180), sin(y * np.pi / 180), sin(z * np.pi / 180)
-    #     return np.array([[cy*cz,     sz,     -sy,     0],
-    #                     [sz,        cx*cz, sx,     0],
-    #                     [sy,       -sx,     cx*cy,  0],
-    #                     [0,         0,      0,      1]]).astype(float)
-
     @staticmethod
     def rotateX(x=0):
         c, s = cos(x * np.pi / 180), sin(x * np.pi / 180)
@@ -60,8 +49,17 @@ class Matrix(object):
                         [0, 0, 0, 1]]).astype(float)
 
     @staticmethod
-    def orthographic():
-        pass
+    def orthographic(top=1/2, bottom=-1/2, left=-1/2, right=1/2, near=0.1, far=1000):
+        a = right - left
+        b = top - bottom
+        c = far - near
+        a0 = right + left
+        b0 = top + bottom
+        c0 = far + near
+        return np.array([[2 / a, 0, 0, 0],
+                         [0, 2 / b, 0, 0],
+                         [0, 0, - 2 / c, -1],
+                         [- a0 / a, - b0 / b, - c0 / c, 0]]).astype(float)
 
     @staticmethod
     def perspective(angleOfView=60, aspectRatio=1, near=0.1, far=1000):
