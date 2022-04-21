@@ -19,6 +19,41 @@ class Geometry(object):
         self.vertexCount = len(attrib.attribData)
 
 
+class PointGeometry(Geometry):
+    def __init__(self):
+        super().__init__()
+
+        positionData = [0, 0, 0]
+        colorData = [1, 1, 1]
+
+        self.addAttrib("vec3", "vertexPosition", positionData)
+        self.addAttrib("vec3", "vertexColor", colorData)
+
+        self.vertexCount = 1
+
+class BoundingBoxGeometry(Geometry):
+    def __init__(self, width=1, height=1, depth=1):
+        super().__init__()
+        p0, p1, p2, p3, p4, p5, p6, p7 = [-width/2, height/2, -depth/2], \
+                                         [width / 2, height / 2, -depth / 2], \
+                                         [-width / 2, -height / 2, -depth / 2], \
+                                         [width / 2, -height / 2, -depth / 2], \
+                                         [-width / 2, height / 2, depth / 2], \
+                                         [width / 2, height / 2, depth / 2], \
+                                         [-width / 2, -height / 2, depth / 2], \
+                                         [width / 2, -height / 2, depth / 2]
+
+        positionData = [p0, p1, p0, p2, p0, p4, p1, p3, p1, p5, p2, p3, p2, p6, p3, p7, p4, p5, p4, p6, p5, p7, p6, p7]
+
+        c0 = [1, 1, 1]
+
+        colorData = [c0 * 24]
+
+        self.addAttrib("vec3", "vertexPosition", positionData)
+        self.addAttrib("vec3", "vertexColor", colorData)
+
+        self.countVertex()
+
 class RectangleGeometry(Geometry):
     def __init__(self, width=1.0, height=1.0):
         super().__init__()
@@ -126,12 +161,6 @@ class TorusGeometry(ParametricGeometry):
     def __init__(self, R=1, r=1/4, radiusSegments=32, heightSegments=16):
         def S(u, v):
             return [(R + r * cos(v)) * cos(u), (R + r * cos(v)) * sin(u), r * sin(v)]
-        super().__init__(0, 2 * pi, radiusSegments, 0, 2 * pi, heightSegments, S)
-
-class TrefoilKnotGeometry(ParametricGeometry):
-    def __init__(self, radiusSegments=32, heightSegments=32):
-        def S(u, v):
-            return [(sin(u) + 2 * sin(2 * u)), (cos(u) - 2 * cos(2 * u)), - sin(3 * u)]
         super().__init__(0, 2 * pi, radiusSegments, 0, 2 * pi, heightSegments, S)
 
 
