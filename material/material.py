@@ -76,7 +76,7 @@ class PointMaterial(BasicMaterial):
     def __init__(self, properties={}):
         super().__init__()
         self.settings["drawStyle"] = GL_POINTS
-        self.settings["pointSize"] = 10
+        self.settings["pointSize"] = 1
         self.settings["roundedPoint"] = True
 
         self.setProperties(properties)
@@ -96,7 +96,7 @@ class LineMaterial(BasicMaterial):
         self.settings["drawStyle"] = GL_LINE_STRIP
         self.settings["lineWidth"] = 1
         # line type: "strip" | "loop" | "segments"
-        self.settings["lineType"] = "strip"
+        self.settings["lineType"] = "segments"
 
         self.setProperties(properties)
 
