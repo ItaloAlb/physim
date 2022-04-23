@@ -4,6 +4,7 @@ from core.camera import Camera
 from core.mesh import Mesh
 from geometry.geometry import *
 from material.material import *
+from physics.particlesystem import *
 import pyglet
 
 
@@ -16,26 +17,17 @@ def main():
     scene = Scene()
     camera = Camera()
 
-    geometry = Surface()
-    material = SurfaceMaterial()
+    camera.translate(0, 0, 2)
 
-    mesh = Mesh(geometry, material)
+    particleSystem = ParticleSystem()
 
-    mesh.translate(0.0, 0.0, -5.0)
+    scene.add(particleSystem.boundBoxMesh)
+    scene.add(particleSystem.particleMesh)
 
-    scene.add(mesh)
-
-    # geometry = PointGeometry()
-    # material = PointMaterial()
-    #
-    # mesh = Mesh(geometry, material)
-    #
-    # mesh.translate(0.0, 0.0, -5.0)
-
-    scene.add(mesh)
 
     def update(dt:float):
-        mesh.rotate(0, 0.1, 0.1)
+        particleSystem()
+        # mesh.rotate(0, 0.1, 0.1)
 
 
     clock = pyglet.clock.schedule_interval(update, 1/120)
