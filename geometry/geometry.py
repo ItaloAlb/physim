@@ -139,11 +139,25 @@ class ParametricGeometry(Geometry):
         self.countVertex()
 
 
+###TESTING###
 class Surface(ParametricGeometry):
     def __init__(self, width=1, height=1, widthSegments=8, heightSegments=8):
         def S(u, v):
             return [u, v, u ** 2 + v ** 2]
         super().__init__(-width/2, width/2, widthSegments, -height/2, height/2, heightSegments, S)
+
+
+class ParticleSystemGeometry(Geometry):
+    def __init__(self, positionData, color: tuple = (1, 1, 1)):
+        super().__init__()
+
+        self.addAttrib("vec3", "vertexPosition", positionData)
+
+        self.countVertex()
+
+        colorData = [color] * (int(self.vertexCount / 3))
+
+        self.addAttrib("vec3", "vertexColor", colorData)
 
 
 class PlaneGeometry(ParametricGeometry):
