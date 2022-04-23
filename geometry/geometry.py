@@ -13,7 +13,6 @@ class Geometry(object):
     def addAttrib(self, attribType, attribName, attribData):
         self.attrib[attribName] = Attribute(attribType, attribData)
 
-    # Not implemented yet
     def countVertex(self):
         attrib = list(self.attrib.values())[0]
         self.vertexCount = len(attrib.attribData)
@@ -30,6 +29,7 @@ class PointGeometry(Geometry):
         self.addAttrib("vec3", "vertexColor", colorData)
 
         self.vertexCount = 1
+
 
 class BoundingBoxGeometry(Geometry):
     def __init__(self, width=1, height=1, depth=1):
@@ -53,6 +53,7 @@ class BoundingBoxGeometry(Geometry):
         self.addAttrib("vec3", "vertexColor", colorData)
 
         self.countVertex()
+
 
 class RectangleGeometry(Geometry):
     def __init__(self, width=1.0, height=1.0):
@@ -136,6 +137,13 @@ class ParametricGeometry(Geometry):
         self.addAttrib("vec3", "vertexColor", colorData)
 
         self.countVertex()
+
+
+class Surface(ParametricGeometry):
+    def __init__(self, width=1, height=1, widthSegments=8, heightSegments=8):
+        def S(u, v):
+            return [u, v, u ** 2 + v ** 2]
+        super().__init__(-width/2, width/2, widthSegments, -height/2, height/2, heightSegments, S)
 
 
 class PlaneGeometry(ParametricGeometry):

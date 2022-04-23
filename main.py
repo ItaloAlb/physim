@@ -16,7 +16,7 @@ def main():
     scene = Scene()
     camera = Camera()
 
-    geometry = TorusGeometry()
+    geometry = Surface()
     material = SurfaceMaterial()
 
     mesh = Mesh(geometry, material)
@@ -54,16 +54,16 @@ def main():
     def on_mouse_scroll(x, y, scroll_x, scroll_y):
         camera.translate(0, 0, - scroll_y)
 
-    @win.event
-    def on_key_press(symbol, modifiers):
-        if symbol == pyglet.window.key.A:
-            camera.translate(-0.1, 0, 0)
-        if symbol == pyglet.window.key.D:
-            camera.translate(0.1, 0, 0)
-        if symbol == pyglet.window.key.W:
-            camera.translate(0, 0.1, 0)
-        if symbol == pyglet.window.key.S:
-            camera.translate(0,-0.1, 0)
+    # @win.event
+    # def on_key_press(symbol, modifiers):
+    #     if symbol == pyglet.window.key.A:
+    #         camera.translate(-0.1, 0, 0)
+    #     if symbol == pyglet.window.key.D:
+    #         camera.translate(0.1, 0, 0)
+    #     if symbol == pyglet.window.key.W:
+    #         camera.translate(0, 0.1, 0)
+    #     if symbol == pyglet.window.key.S:
+    #         camera.translate(0,-0.1, 0)
 
     pyglet.app.run()
 
