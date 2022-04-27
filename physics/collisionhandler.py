@@ -1,7 +1,7 @@
+import time
 from typing import Tuple
 
 import numpy
-# from physics.particlesystem import ParticleSystem
 
 
 # Collision Handler is a graphical concept to solve collision problems.
@@ -20,15 +20,20 @@ class CollisionHandler:
 
         # check and response: particle-to-bounding collision
 
-        # create a list with all collision index where pNextPos is out of bound
-        colCheck = numpy.where(pNextPos > boundBox / 2, True, False)
-        pVel = numpy.where(colCheck, -pVel, pVel)
-        colCheck = numpy.where(pNextPos < - boundBox / 2, True, False)
-        pVel = numpy.where(colCheck, -pVel, pVel)
+        # inumpytime = time.time()
+        _temp1, _temp2 = numpy.greater(pNextPos, boundBox / 2), numpy.less(pNextPos, - boundBox / 2)
+        _temp3 = numpy.not_equal(_temp1, _temp2)
+        # tnumpytime = time.time() - inumpytime
 
-        pNextPos = numpy.where(pNextPos > boundBox / 2, 2 * boundBox / 2 - pNextPos, pNextPos)
-        pNextPos = numpy.where(pNextPos < - boundBox / 2, 2 * (- boundBox / 2) - pNextPos, pNextPos)
+        # ipythonictime = time.time()
+        # _temp1, _temp2 = pNextPos > boundBox / 2, pNextPos < - boundBox / 2
+        # _temp3 = _temp1 != _temp2
+        # tpythonictime = time.time() - ipythonictime
 
+        # print("python: ", tpythonictime > 0.0, "; numpy: ", tnumpytime > 0.0)
+
+        pVel = numpy.where(_temp3, -pVel, pVel)
+        pNextPos = numpy.where(_temp3, (-1) ** _temp2 * boundBox - pNextPos, pNextPos)
 
         # check and response: particle-to-particle collision
 
