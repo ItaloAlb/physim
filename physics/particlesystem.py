@@ -1,4 +1,5 @@
 import numpy
+from numpy import random
 
 from geometry.geometry import *
 from material.material import *
@@ -18,10 +19,12 @@ class ParticleSystem:
         # every three values is assigned to one particle.
         # ex: pPos[0], pPos[1], pPos[2] -> first particle position
         # ex: pPos[3], pPos[4], pPos[5] -> second particle position
-        self.pPos = numpy.asarray([0, 0, -5])
+        # self.pPos = numpy.asarray([0, 0, 0, 0.4, 0.4, 0.4, 0.3, 0.3, 0.3, 0.2, 0.2, 0.2])
+        self.pPos = - 2 * random.random(3*32) + 1
         # same as particle position array.
         # every three value is assigned to one particle.
-        self.pVel = numpy.asarray([0, 0, 0])
+        # self.pVel = numpy.asarray([-0.6, 0.3, 0.5, -0.6, 0.3, 0.5, -0.6, 0.3, 0.5, -0.6, 0.3, 0.5])
+        self.pVel = random.random(3*32) / 4
 
         # instance of Collision Handler class
         self.collisionHandler = CollisionHandler()
@@ -36,15 +39,15 @@ class ParticleSystem:
         self._particleMat = PointMaterial()
         self.particleMesh = Mesh(self._particleGeo, self._particleMat)
 
-    def add_particle(self, mass, position, velocity) -> None:
-        numpy.append(self.pMass, mass)
-        numpy.append(self.pPos, position)
-        numpy.append(self.pVel, velocity)
-
-    def remove_particle(self, i: int) -> None:
-        numpy.delete(self.pMass, i)
-        numpy.delete(self.pPos, i)
-        numpy.delete(self.pVel, i)
+    # def add_particle(self, mass, position, velocity) -> None:
+    #     numpy.append(self.pMass, mass)
+    #     numpy.append(self.pPos, position)
+    #     numpy.append(self.pVel, velocity)
+    #
+    # def remove_particle(self, i: int) -> None:
+    #     numpy.delete(self.pMass, i)
+    #     numpy.delete(self.pPos, i)
+    #     numpy.delete(self.pVel, i)
 
     def update(self, dt: float = 1 / 60):
         # updating all particles position by calling collision handler
@@ -54,6 +57,9 @@ class ParticleSystem:
         attrib = self._particleGeo.attrib["vertexPosition"]
         attrib.attribData = self.pPos
         attrib.uploadData()
+
+    def collision_handler(self):
+        return
 
     def __call__(self):
         self.update()
