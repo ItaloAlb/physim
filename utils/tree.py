@@ -86,8 +86,18 @@ class Tree:
             node = self.root
         return self._height(node)
 
+    # Return an iterable object of nodes a tree has
     def __iter__(self):
-        return
+        self.queue = [self.root]
+        return self
+
+    # Return the next node object until no one is left
+    def __next__(self):
+        if len(self.queue) > 0:
+            node = self.queue.pop(0)
+            self.queue = node.children + self.queue
+            return node
+        raise StopIteration
 
     # Return the number of nodes a tree has
     def __len__(self):
@@ -97,3 +107,10 @@ class Tree:
             queue = node.children + queue
             count += 1
         return count
+
+tree = Tree()
+tree.root.children = [Tree.Node(), Tree.Node(), Tree.Node(), Tree.Node()]
+tree.root.children[0].children = [Tree.Node(), Tree.Node(), Tree.Node(), Tree.Node()]
+
+for node in iter(tree):
+    print(node)
