@@ -40,7 +40,7 @@ def main():
     @win.event
     def on_mouse_drag(x, y, dx, dy, buttons, modifiers):
         if buttons & pyglet.window.mouse.RIGHT:
-            camera.rotate(dy/10, dx/10, 0)
+            scene.rotate(- dy/10, dx/10, 0)
 
     @win.event
     def on_mouse_scroll(x, y, scroll_x, scroll_y):
