@@ -5,13 +5,18 @@ class Tree:
     # Abstract node class
     class Node:
         def __init__(self, parent = None, children = None, data = None):
-            self._parent = None
-            self._children = []
-            self._data = []
+            self.parent = parent
+            self.children = children
+            self.data = data
 
         # Return the data stored at this node
+        @property
         def data(self):
             return self._data
+
+        @data.setter
+        def data(self, d):
+            self._data = d
 
         # Return Node representing node's parent (or None if node is root)
         @property
@@ -37,7 +42,7 @@ class Tree:
 
         # Return True if Node node represents the root of the tree
         def is_root(self):
-            return self._parent is None
+            return self.parent is None
 
         # Return True if Node node doesn't have any children
         def is_leaf(self):
@@ -45,14 +50,14 @@ class Tree:
 
         # Return True if other Node represent the same data
         def __eq__(self, other):
-            return self.data() == other.data()
+            return self.data == other.data
 
         # Return True if other Node doesn't represent the same data
         def __ne__(self, other):
-            return self.data() != other.data()
+            return self.data != other.data
 
     def __init__(self):
-        self._root = self.Node()
+        self.root = self.Node()
 
     # Return root Node of this tree
     @property
@@ -62,6 +67,15 @@ class Tree:
     @root.setter
     def root(self, r):
         self._root = r if isinstance(r, self.Node) else TypeError('root must be a node')
+
+    def add_node(self, node):
+        if node.parent in iter(self):
+            node.parent.children.append(node)
+            return
+
+    def remove_node(self, node):
+        if node in iter(self):
+            node.parent.children.remove(node)
 
     # Return True if the tree is empty
     def is_empty(self):
@@ -78,7 +92,6 @@ class Tree:
         if node.is_leaf():
             return 0
         return 1 + max(self._height(child) for child in node.children())
-
 
     # Return depth of the node in this tree.
     def height(self, node=None):
@@ -109,8 +122,13 @@ class Tree:
         return count
 
 tree = Tree()
-tree.root.children = [Tree.Node(), Tree.Node(), Tree.Node(), Tree.Node()]
-tree.root.children[0].children = [Tree.Node(), Tree.Node(), Tree.Node(), Tree.Node()]
+node = Tree.Node(tree.root)
+tree.add_node(node)
 
 for node in iter(tree):
-    print(node)
+    print(node.is_root())
+
+print('\n')
+
+for node in iter(tree):
+    print(node.is_leaf())
