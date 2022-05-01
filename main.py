@@ -6,9 +6,11 @@ from geometry.geometry import *
 from material.material import *
 from physics.particlesystem import *
 import pyglet
+import numpy
 
 
 def main():
+
     config = pyglet.gl.Config(double_buffer=True, sample_buffers=1, samples=4)
 
     win = pyglet.window.Window(config=config)
