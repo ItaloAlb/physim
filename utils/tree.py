@@ -1,5 +1,7 @@
 from utils.pointer import *
-
+import numpy
+import time
+from threading import Thread
 
 # Abstract base class representing a tree structure
 class Tree:
@@ -7,25 +9,22 @@ class Tree:
     # Abstract node class
     class Node:
 
-        data = ptr()
-
         def __init__(self, **kwargs):
             self.parent, self.data, self.children, self.tag = kwargs.get('parent', None), \
                                                               kwargs.get('data', None), \
                                                               kwargs.get('children', None), \
                                                               kwargs.get('tag', None)
 
+        # Return the data stored at this node
+        @property
+        def data(self):
+            return self._data
 
-        # # Return the data stored at this node
-        # @property
-        # def data(self):
-        #     return self._data
-        #
-        # @data.setter
-        # def data(self, d):
-        #     if not(isinstance(d, list) or d is None):
-        #         raise TypeError('data must be a list')
-        #     self._data = [] if d is None else d
+        @data.setter
+        def data(self, d):
+            if not(isinstance(d, (list, numpy.ndarray)) or d is None):
+                raise TypeError('data must be a list')
+            self._data = [] if d is None else d
 
         # Return Node representing node's parent (or None if node is root)
         @property
@@ -63,13 +62,13 @@ class Tree:
         def is_leaf(self):
             return self.num_children() == 0
 
-        # Return True if other Node represent the same data
-        def __eq__(self, other):
-            return self.data == other.data
-
-        # Return True if other Node doesn't represent the same data
-        def __ne__(self, other):
-            return self.data != other.data
+        # # Return True if other Node represent the same data
+        # def __eq__(self, other):
+        #     return self.data == other.data
+        #
+        # # Return True if other Node doesn't represent the same data
+        # def __ne__(self, other):
+        #     return self.data != other.data
 
     def __init__(self, **kwargs):
         self.root = Tree.Node(
@@ -201,25 +200,168 @@ class Octree(Tree):
             tag=kwargs.get('tag', 'root')
         )
 
+    # Branch each leaf node into eight new leaf nodes, passing the data through them
     def subdivide(self):
-        if self.is_empty():
-            raise SubdivideEmptyTreeError
-        for leaf in self.__leaf__:
-            c, w = leaf.center, leaf.width / 2
-            nwf, nef, swf, sef = Octree.Space(parent=leaf, center=(c[0] - w, c[1] + w, c[2] - w), width=w, tag="nwf"), \
-                                 Octree.Space(parent=leaf, center=(c[0] + w, c[1] + w, c[2] - w), width=w, tag="nef"), \
-                                 Octree.Space(parent=leaf, center=(c[0] - w, c[1] - w, c[2] - w), width=w, tag="swf"), \
-                                 Octree.Space(parent=leaf, center=(c[0] + w, c[1] - w, c[2] - w), width=w, tag="sef")
 
-            nwb, neb, swb, seb = Octree.Space(parent=leaf, center=(c[0] - w, c[1] + w, c[2] + w), width=w, tag="nwb"), \
-                                 Octree.Space(parent=leaf, center=(c[0] + w, c[1] + w, c[2] + w), width=w, tag="neb"), \
-                                 Octree.Space(parent=leaf, center=(c[0] - w, c[1] - w, c[2] + w), width=w, tag="swb"), \
-                                 Octree.Space(parent=leaf, center=(c[0] + w, c[1] - w, c[2] + w), width=w, tag="seb")
+        def _extract(**kwargs):
+            _condition = kwargs.get('condition')
+            _data = kwargs.get('data')
+            _dim = kwargs.get('dim', 3)
+
+            if _dim > 3 or not isinstance(_dim, int):
+                raise ExtractDimensionError()
+
+            if _dim == 3:
+                _x = numpy.extract(_condition, _data[0])
+                _y = numpy.extract(_condition, _data[1])
+                _z = numpy.extract(_condition, _data[2])
+
+                _data = numpy.stack((_x, _y, _z)).reshape(-1, order='F')
+
+            elif _dim == 2:
+                _x = numpy.extract(_condition, _data[0])
+                _y = numpy.extract(_condition, _data[1])
+
+                _data = numpy.stack((_x, _y)).reshape(-1, order='F')
+
+            return _data
+
+        if self.is_empty():
+            raise SubdivideEmptyTreeError()
+
+        for leaf in self.__leaf__:
+
+            c, w = leaf.center, leaf.width / 2
+
+            _len = len(leaf.data)
+            _x = leaf.data[0:_len:3]
+            _y = leaf.data[1:_len:3]
+            _z = leaf.data[2:_len:3]
+
+            _data = [_x, _y, _z]
+
+            _positive_x, _negative_x = numpy.greater_equal(_x, c[0]), numpy.less_equal(_x, c[0])
+            _positive_y, _negative_y = numpy.greater_equal(_y, c[1]), numpy.less_equal(_y, c[1])
+            _positive_z, _negative_z = numpy.greater_equal(_z, c[2]), numpy.less_equal(_z, c[2])
+
+            _temp = numpy.all([_negative_x, _positive_y, _positive_z], axis=0)
+
+            nwf = Octree.Space(
+                parent=leaf,
+                center=(c[0] - w, c[1] + w, c[2] + w),
+                data=_extract(
+                    condition=_temp,
+                    data=_data
+                ),
+                width=w,
+                tag="nwf"
+            )
+
+            _temp = numpy.all([_positive_x, _positive_y, _positive_z], axis=0)
+
+            nef = Octree.Space(
+                parent=leaf,
+                center=(c[0] + w, c[1] + w, c[2] + w),
+                data=_extract(
+                    condition=_temp,
+                    data=_data
+                ),
+                width=w, tag="nef"
+            )
+
+            _temp = numpy.all([_negative_x, _negative_y, _positive_z], axis=0)
+
+            swf = Octree.Space(
+                parent=leaf,
+                center=(c[0] - w, c[1] - w, c[2] + w),
+                data=_extract(
+                    condition=_temp,
+                    data=_data
+                ),
+                width=w,
+                tag="swf"
+            )
+
+            _temp = numpy.all([_positive_x, _negative_y, _positive_z], axis=0)
+
+            sef = Octree.Space(
+                parent=leaf,
+                center=(c[0] + w, c[1] - w, c[2] + w),
+                data=_extract(
+                    condition=_temp,
+                    data=_data
+                ),
+                width=w,
+                tag="sef"
+            )
+
+            _temp = numpy.all([_negative_x, _positive_y, _negative_z], axis=0)
+
+            nwb = Octree.Space(
+                parent=leaf,
+                center=(c[0] - w, c[1] + w, c[2] - w),
+                data=_extract(
+                    condition=_temp,
+                    data=_data
+                ),
+                width=w,
+                tag="nwb"
+            )
+
+            _temp = numpy.all([_positive_x, _positive_y, _negative_z], axis=0)
+
+            neb = Octree.Space(
+                parent=leaf,
+                center=(c[0] + w, c[1] + w, c[2] - w),
+                data=_extract(
+                    condition=_temp,
+                    data=_data
+                ),
+                width=w,
+                tag="neb"
+            )
+
+            _temp = numpy.all([_negative_x, _negative_y, _negative_z], axis=0)
+
+            swb = Octree.Space(
+                parent=leaf,
+                center=(c[0] - w, c[1] - w, c[2] - w),
+                data=_extract(
+                    condition=_temp,
+                    data=_data
+                ),
+                width=w,
+                tag="swb"
+            )
+
+            _temp = numpy.all([_positive_x, _negative_y, _negative_z], axis=0)
+
+            seb = Octree.Space(
+                parent=leaf,
+                center=(c[0] + w, c[1] - w, c[2] - w),
+                data=_extract(
+                    condition=_temp,
+                    data=_data
+                ),
+                width=w,
+                tag="seb"
+            )
 
             self.add_node(nwf, nef, swf, sef, nwb, neb, swb, seb)
 
-    # Create a data reference on root's data to leaf's data based on a space partitioning criteria
+
     def relocate(self):
+
+        for leaf in self.__leaf__:
+            c, w = leaf.center, leaf.width / 2
+            _len = len(leaf.data)
+            _x = leaf.data[0:_len:3]
+            _y = leaf.data[1:_len:3]
+            _z = leaf.data[2:_len:3]
+
+            _positive_x, _negative_x = numpy.greater(_x, c[0] + w), numpy.less(_x, c[0] - w)
+            _positive_y, _negative_y = numpy.greater(_y, c[0] + w), numpy.less(_y, c[1] - w)
+            _positive_z, _negative_z = numpy.greater(_z, c[0] + w), numpy.less(_z, c[2] - w)
 
         pass
 
@@ -227,8 +369,12 @@ class SubdivideEmptyTreeError(Exception):
     """Raised when trying to subdivide an empty tree"""
     pass
 
+class ExtractDimensionError(Exception):
+    """Raised when trying to extract using a not defined dimension"""
+    pass
+
 # tree = Tree()
-octree = Octree()
-# octree.subdivide()
-# for node in octree.__leaf__:
-#     print("center: ", node.center, "   \t width: ", node.width, "\t tag: ", node.tag)
+itime = time.time()
+octree = Octree(data=- 2 * numpy.random.random(3*512*1024) + 1)
+octree.subdivide()
+print('{} FPS'.format(int(1/(time.time() - itime))))
