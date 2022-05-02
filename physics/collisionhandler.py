@@ -20,15 +20,17 @@ class CollisionHandler:
 
         # check and response: particle-to-bounding collision
 
-        # inumpytime = time.time()
+        _x = pNextPos[0:len(pNextPos):3]
+        _y = pNextPos[1:len(pNextPos):3]
+        _z = pNextPos[2:len(pNextPos):3]
+
+        # print("pos: ", pNextPos[:6], "x: ", _x[:2], "y: ", _y[:2], "_z: ", _z[:2])
+
         _temp1, _temp2 = numpy.greater(pNextPos, boundBox / 2), numpy.less(pNextPos, - boundBox / 2)
         _temp3 = numpy.not_equal(_temp1, _temp2)
-        # tnumpytime = time.time() - inumpytime
 
-        # ipythonictime = time.time()
         # _temp1, _temp2 = pNextPos > boundBox / 2, pNextPos < - boundBox / 2
         # _temp3 = _temp1 != _temp2
-        # tpythonictime = time.time() - ipythonictime
 
         # print("python: ", tpythonictime > 0.0, "; numpy: ", tnumpytime > 0.0)
 
