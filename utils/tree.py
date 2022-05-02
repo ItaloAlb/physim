@@ -191,8 +191,15 @@ class Octree(Tree):
             self._data = [] if d is None else d
 
             if not self.is_leaf:
-                nwf = self['nwf'], nef = self['nef'], swf = self['swf'], sef = self['sef']
-                nwb = self['nwb'], neb = self['neb'], swb = self['swb'], seb = self['seb']
+
+                nwf = self['nwf']
+                nef = self['nef']
+                swf = self['swf']
+                sef = self['sef']
+                nwb = self['nwb']
+                neb = self['neb']
+                swb = self['swb']
+                seb = self['seb']
 
                 c, w = self.center, self.width / 2
 
@@ -381,7 +388,14 @@ class Octree(Tree):
 
 
     def relocate(self):
-        pass
+        _data = []
+        for leaf in self.__leaf__:
+            _data = numpy.concatenate((_data, leaf.data))
+        if len(_data) == len(self.root.data):
+            self.root.data = _data
+            return
+        raise InvalidDataLengthError
+        # self.root.data = numpy.unique(_data)
 
 class SubdivideEmptyTreeError(Exception):
     """Raised when trying to subdivide an empty tree"""
@@ -393,6 +407,9 @@ class ExtractDimensionError(Exception):
 
 class InvalidTagError(Exception):
     """Raised when trying to get child by invalid tag"""
+    pass
+
+class InvalidDataLengthError(Exception):
     pass
 
 # tree = Tree()

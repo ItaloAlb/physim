@@ -22,10 +22,10 @@ class ParticleSystem(Octree):
         # every three values is assigned to one particle.
         # ex: pPos[0], pPos[1], pPos[2] -> first particle position
         # ex: pPos[3], pPos[4], pPos[5] -> second particle position
-        self.pPos = - 2 * random.random(3*32) + 1
+        self.pPos = - 2 * random.random(3*512) + 1
         # same as particle position array.
         # every three value is assigned to one particle.
-        self.pVel = random.random(3*32)
+        self.pVel = random.random(3*512)
 
         # instance of Collision Handler class
         self.collisionHandler = CollisionHandler()
